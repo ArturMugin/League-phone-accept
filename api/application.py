@@ -2,12 +2,8 @@
 #$env:FLASK_APP = 'application.py'
 #$env:FLASK_ENV = 'development'  
 
-#from functools import _Descriptor
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.wrappers import request
-
-
 app = Flask(__name__)   
 
 
@@ -49,3 +45,12 @@ def add_drink():
     db.session.add(drink)
     db.session.commit()
     return {'id': drink.id}
+
+@app.route("/drinks/<id>", methods=["DELETE"])
+def delete_drink(id):
+    drink = Drink.query.get(id)
+    if drink is None:
+        return {"error": "not found"}
+    db.session.delete(drink)
+    db.session.commit()
+    return {"message": "Deleted"}
